@@ -29,6 +29,8 @@ const CHAR_TO_TILE: Record<string, TileType> = {
     "T": TileType.TrickySpike,
 };
 
+const EMPTY_ROW = ".".repeat(LEVEL_COLS);
+
 function parseLevel(rows: string[]): LevelMatrix {
     return rows.map((row, rowIdx) =>
         [...row].map((c, colIdx) => {
@@ -42,5 +44,12 @@ function parseLevel(rows: string[]): LevelMatrix {
 }
 
 export function defineLevel(name: string, rows: string[]): LevelDef {
-    return { name, matrix: parseLevel(rows) };
+    if (rows.length > LEVEL_ROWS) {
+        throw new Error(
+            `Level "${name}" has ${rows.length} rows, max is ${LEVEL_ROWS}`,
+        );
+    }
+    const padCount = LEVEL_ROWS - rows.length;
+    const padded = padCount > 0 ? [...Array(padCount).fill(EMPTY_ROW), ...rows] : rows;
+    return { name, matrix: parseLevel(padded) };
 }

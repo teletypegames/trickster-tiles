@@ -18,18 +18,29 @@ export interface LoadedLevel {
     trickySpikes: ObstacleSpikeTricky[];
 }
 
-interface Cell {
-    row: number;
-    col: number;
-}
+const cellCenterX = (col: number): number => col * TILE_SIZE + TILE_SIZE / 2;
+const cellBottomY = (row: number, entityHeight: number): number =>
+    (row + 1) * TILE_SIZE - entityHeight / 2;
 
 export class LevelLoader {
     constructor(private readonly scene: Phaser.Scene) {}
 
     load(matrix: LevelMatrix): LoadedLevel {
         return {
-            player: this.buildPlayer(matrix),
-            exit: this.buildExit(matrix),
+            player: this.buildSingleton(
+                matrix,
+                TileType.Player,
+                Player.SIZE,
+                (x, y) => new Player(this.scene, x, y),
+                "Player",
+            ),
+            exit: this.buildSingleton(
+                matrix,
+                TileType.Exit,
+                Exit.HEIGHT,
+                (x, y) => new Exit(this.scene, x, y),
+                "Exit",
+            ),
             platforms: this.buildHorizontalRuns(
                 matrix,
                 TileType.Platform,
@@ -40,16 +51,18 @@ export class LevelLoader {
                 TileType.DisappearingPlatform,
                 (x, y, w, h) => new ObstaclePlatformDisappearing(this.scene, x, y, w, h),
             ),
-            spikes: this.buildSingleCells(matrix, TileType.Spike, (col, row) => {
-                const x = col * TILE_SIZE + TILE_SIZE / 2;
-                const y = (row + 1) * TILE_SIZE - ObstacleSpikeNormal.HEIGHT / 2;
-                return new ObstacleSpikeNormal(this.scene, x, y);
-            }),
-            trickySpikes: this.buildSingleCells(matrix, TileType.TrickySpike, (col, row) => {
-                const x = col * TILE_SIZE + TILE_SIZE / 2;
-                const y = (row + 1) * TILE_SIZE - ObstacleSpikeTricky.HEIGHT / 2;
-                return new ObstacleSpikeTricky(this.scene, x, y);
-            }),
+            spikes: this.buildSingleCells(
+                matrix,
+                TileType.Spike,
+                ObstacleSpikeNormal.HEIGHT,
+                (x, y) => new ObstacleSpikeNormal(this.scene, x, y),
+            ),
+            trickySpikes: this.buildSingleCells(
+                matrix,
+                TileType.TrickySpike,
+                ObstacleSpikeTricky.HEIGHT,
+                (x, y) => new ObstacleSpikeTricky(this.scene, x, y),
+            ),
         };
     }
 
@@ -81,39 +94,34 @@ export class LevelLoader {
     private buildSingleCells<T>(
         matrix: LevelMatrix,
         tileType: TileType,
-        factory: (col: number, row: number) => T,
+        entityHeight: number,
+        factory: (x: number, y: number) => T,
     ): T[] {
         const result: T[] = [];
         for (let row = 0; row < matrix.length; row++) {
             for (let col = 0; col < matrix[row].length; col++) {
-                if (matrix[row][col] === tileType) result.push(factory(col, row));
+                if (matrix[row][col] === tileType) {
+                    result.push(factory(cellCenterX(col), cellBottomY(row, entityHeight)));
+                }
             }
         }
         return result;
     }
 
-    private buildPlayer(matrix: LevelMatrix): Player {
-        const cell = this.findTile(matrix, TileType.Player);
-        if (!cell) throw new Error("Level matrix has no Player tile");
-        const x = cell.col * TILE_SIZE + TILE_SIZE / 2;
-        const y = (cell.row + 1) * TILE_SIZE - Player.SIZE / 2;
-        return new Player(this.scene, x, y);
-    }
-
-    private buildExit(matrix: LevelMatrix): Exit {
-        const cell = this.findTile(matrix, TileType.Exit);
-        if (!cell) throw new Error("Level matrix has no Exit tile");
-        const x = cell.col * TILE_SIZE + TILE_SIZE / 2;
-        const y = (cell.row + 1) * TILE_SIZE - Exit.HEIGHT / 2;
-        return new Exit(this.scene, x, y);
-    }
-
-    private findTile(matrix: LevelMatrix, tile: TileType): Cell | null {
+    private buildSingleton<T>(
+        matrix: LevelMatrix,
+        tileType: TileType,
+        entityHeight: number,
+        factory: (x: number, y: number) => T,
+        label: string,
+    ): T {
         for (let row = 0; row < matrix.length; row++) {
             for (let col = 0; col < matrix[row].length; col++) {
-                if (matrix[row][col] === tile) return { row, col };
+                if (matrix[row][col] === tileType) {
+                    return factory(cellCenterX(col), cellBottomY(row, entityHeight));
+                }
             }
         }
-        return null;
+        throw new Error(`Level matrix has no ${label} tile`);
     }
 }

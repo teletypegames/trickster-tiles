@@ -1,5 +1,20 @@
 import Phaser from "phaser";
 
+type PhysicsBodyHolder =
+    | Phaser.Types.Physics.Arcade.GameObjectWithBody
+    | Phaser.Physics.Arcade.Body
+    | Phaser.Physics.Arcade.StaticBody
+    | Phaser.Tilemaps.Tile;
+
+function getBody(target: PhysicsBodyHolder): Phaser.Physics.Arcade.Body | Phaser.Physics.Arcade.StaticBody {
+    if (target instanceof Phaser.Physics.Arcade.Body || target instanceof Phaser.Physics.Arcade.StaticBody) {
+        return target;
+    }
+    return (target as Phaser.Types.Physics.Arcade.GameObjectWithBody).body as
+        | Phaser.Physics.Arcade.Body
+        | Phaser.Physics.Arcade.StaticBody;
+}
+
 export class Platform extends Phaser.GameObjects.TileSprite {
     static readonly TEXTURE_KEY = "platform";
 
@@ -12,15 +27,12 @@ export class Platform extends Phaser.GameObjects.TileSprite {
     }
 
     // Phaser collider processCallback: only collide when the mover is descending onto the top.
-    static canLand(
-        mover: Phaser.Types.Physics.Arcade.GameObjectWithBody,
-        platform: Phaser.Types.Physics.Arcade.GameObjectWithBody,
-    ): boolean {
-        const moverBody = mover.body as Phaser.Physics.Arcade.Body;
-        const platBody = platform.body as Phaser.Physics.Arcade.StaticBody;
+    static canLand: Phaser.Types.Physics.Arcade.ArcadePhysicsCallback = (mover, platform) => {
+        const moverBody = getBody(mover) as Phaser.Physics.Arcade.Body;
+        const platBody = getBody(platform) as Phaser.Physics.Arcade.StaticBody;
         return (
             moverBody.velocity.y >= 0 &&
             moverBody.bottom - moverBody.deltaY() <= platBody.top
         );
-    }
+    };
 }

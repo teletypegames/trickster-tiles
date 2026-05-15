@@ -14,9 +14,14 @@ interface SceneData {
     levelIndex?: number;
 }
 
+interface Reactive {
+    react(playerX: number, playerY: number): void;
+}
+
 export class GameScene extends Phaser.Scene {
     private static readonly TRANSITION_DELAY_MS = 1200;
     private static readonly FALL_LIMIT_PADDING = 80;
+    private static readonly WORLD_BOUNDS_BOTTOM_PADDING = 200;
 
     private levelIndex = 0;
     private player!: Player;
@@ -25,6 +30,7 @@ export class GameScene extends Phaser.Scene {
     private disappearing: ObstaclePlatformDisappearing[] = [];
     private spikes: ObstacleSpikeNormal[] = [];
     private trickySpikes: ObstacleSpikeTricky[] = [];
+    private reactives: Reactive[] = [];
     private levelCompleted = false;
     private dying = false;
     private hudText!: Phaser.GameObjects.Text;
@@ -42,10 +48,16 @@ export class GameScene extends Phaser.Scene {
         this.disappearing = [];
         this.spikes = [];
         this.trickySpikes = [];
+        this.reactives = [];
     }
 
     create(): void {
-        this.physics.world.setBounds(0, 0, this.scale.width, this.scale.height + 200);
+        this.physics.world.setBounds(
+            0,
+            0,
+            this.scale.width,
+            this.scale.height + GameScene.WORLD_BOUNDS_BOTTOM_PADDING,
+        );
 
         const def = LEVELS[this.levelIndex];
         const loader = new LevelLoader(this);
@@ -56,6 +68,7 @@ export class GameScene extends Phaser.Scene {
         this.disappearing = loaded.disappearing;
         this.spikes = loaded.spikes;
         this.trickySpikes = loaded.trickySpikes;
+        this.reactives = [...loaded.disappearing, ...loaded.trickySpikes];
 
         this.physics.add.collider(this.player, this.platforms, undefined, Platform.canLand);
         this.physics.add.collider(this.player, this.disappearing, undefined, Platform.canLand);
@@ -85,11 +98,8 @@ export class GameScene extends Phaser.Scene {
         if (this.levelCompleted || this.dying) return;
         this.player.update();
 
-        for (const platform of this.disappearing) {
-            platform.react(this.player.x, this.player.y);
-        }
-        for (const spike of this.trickySpikes) {
-            spike.react(this.player.x);
+        for (const entity of this.reactives) {
+            entity.react(this.player.x, this.player.y);
         }
 
         if (this.player.y > this.scale.height + GameScene.FALL_LIMIT_PADDING) {
