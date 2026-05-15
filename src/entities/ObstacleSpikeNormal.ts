@@ -1,14 +1,14 @@
 import Phaser from "phaser";
 
-export class ObstacleSpikeNormal extends Phaser.GameObjects.Rectangle {
+export class ObstacleSpikeNormal extends Phaser.GameObjects.Image {
+    static readonly TEXTURE_KEY = "spike-normal";
     static readonly WIDTH = 40;
     static readonly HEIGHT = 20;
-    static readonly COLOR = 0xff3333;
 
     declare body: Phaser.Physics.Arcade.StaticBody;
 
     constructor(scene: Phaser.Scene, x: number, y: number) {
-        super(scene, x, y, ObstacleSpikeNormal.WIDTH, ObstacleSpikeNormal.HEIGHT, ObstacleSpikeNormal.COLOR);
+        super(scene, x, y, ObstacleSpikeNormal.TEXTURE_KEY);
         scene.add.existing(this);
         scene.physics.add.existing(this, true);
     }

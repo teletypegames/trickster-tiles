@@ -1,9 +1,9 @@
 import Phaser from "phaser";
 
-export class ObstacleSpikeTricky extends Phaser.GameObjects.Rectangle {
+export class ObstacleSpikeTricky extends Phaser.GameObjects.Image {
+    static readonly TEXTURE_KEY = "spike-tricky";
     static readonly WIDTH = 40;
     static readonly HEIGHT = 20;
-    static readonly COLOR = 0xff8800;
     static readonly TRIGGER_DISTANCE = 55;
     static readonly DISPLACEMENT = 100;
 
@@ -12,7 +12,7 @@ export class ObstacleSpikeTricky extends Phaser.GameObjects.Rectangle {
     private moved = false;
 
     constructor(scene: Phaser.Scene, x: number, y: number) {
-        super(scene, x, y, ObstacleSpikeTricky.WIDTH, ObstacleSpikeTricky.HEIGHT, ObstacleSpikeTricky.COLOR);
+        super(scene, x, y, ObstacleSpikeTricky.TEXTURE_KEY);
         scene.add.existing(this);
         scene.physics.add.existing(this, true);
     }

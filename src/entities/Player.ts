@@ -1,8 +1,8 @@
 import Phaser from "phaser";
 
-export class Player extends Phaser.GameObjects.Rectangle {
+export class Player extends Phaser.GameObjects.Image {
+    static readonly TEXTURE_KEY = "player";
     static readonly SIZE = 32;
-    static readonly COLOR = 0xff4444;
     static readonly MOVE_SPEED = 250;
     static readonly JUMP_VELOCITY = 480;
 
@@ -15,7 +15,7 @@ export class Player extends Phaser.GameObjects.Rectangle {
     private keySpace: Phaser.Input.Keyboard.Key;
 
     constructor(scene: Phaser.Scene, x: number, y: number) {
-        super(scene, x, y, Player.SIZE, Player.SIZE, Player.COLOR);
+        super(scene, x, y, Player.TEXTURE_KEY);
         scene.add.existing(this);
         scene.physics.add.existing(this);
         this.body.setCollideWorldBounds(true);
