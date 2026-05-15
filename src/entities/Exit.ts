@@ -7,8 +7,8 @@ export class Exit extends Phaser.GameObjects.Rectangle {
 
     declare body: Phaser.Physics.Arcade.StaticBody;
 
-    constructor(scene: Phaser.Scene, x: number, groundY: number) {
-        super(scene, x, groundY - Exit.HEIGHT / 2, Exit.WIDTH, Exit.HEIGHT, Exit.COLOR);
+    constructor(scene: Phaser.Scene, x: number, y: number) {
+        super(scene, x, y, Exit.WIDTH, Exit.HEIGHT, Exit.COLOR);
         scene.add.existing(this);
         scene.physics.add.existing(this, true);
     }

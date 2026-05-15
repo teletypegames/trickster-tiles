@@ -2,36 +2,57 @@ import Phaser from "phaser";
 import { Player } from "../entities/Player";
 import { Exit } from "../entities/Exit";
 import { Platform } from "../entities/Platform";
+import { LEVELS } from "../levels/levels";
+import { LevelLoader } from "../levels/LevelLoader";
+
+interface SceneData {
+    levelIndex?: number;
+}
 
 export class GameScene extends Phaser.Scene {
-    private static readonly FLOOR_TOP = 500;
-    private static readonly FLOOR_HEIGHT = 100;
+    private static readonly TRANSITION_DELAY_MS = 1200;
+    private static readonly FALL_LIMIT_PADDING = 80;
 
+    private levelIndex = 0;
     private player!: Player;
     private exit!: Exit;
-    private platform!: Platform;
-    private levelCompleteText!: Phaser.GameObjects.Text;
+    private platforms: Platform[] = [];
     private levelCompleted = false;
+    private hudText!: Phaser.GameObjects.Text;
+    private centerText!: Phaser.GameObjects.Text;
 
     constructor() {
         super({ key: "GameScene" });
     }
 
+    init(data: SceneData): void {
+        this.levelIndex = data.levelIndex ?? 0;
+        this.levelCompleted = false;
+        this.platforms = [];
+    }
+
     create(): void {
-        const width = this.scale.width;
-        const height = this.scale.height;
-        const floorTop = GameScene.FLOOR_TOP;
-        const floorH = GameScene.FLOOR_HEIGHT;
+        this.physics.world.setBounds(0, 0, this.scale.width, this.scale.height + 200);
 
-        this.platform = new Platform(this, width / 2, floorTop + floorH / 2, width, floorH);
-        this.exit = new Exit(this, 60, floorTop);
-        this.player = new Player(this, width - Player.SIZE - 40, floorTop - Player.SIZE / 2);
+        const def = LEVELS[this.levelIndex];
+        const loader = new LevelLoader(this);
+        const loaded = loader.load(def.matrix);
+        this.player = loaded.player;
+        this.exit = loaded.exit;
+        this.platforms = loaded.platforms;
 
-        this.physics.add.collider(this.player, this.platform);
+        this.physics.add.collider(this.player, this.platforms);
         this.physics.add.overlap(this.player, this.exit, () => this.completeLevel());
 
-        this.levelCompleteText = this.add
-            .text(width / 2, height / 2, "LEVEL COMPLETED!", {
+        this.hudText = this.add.text(
+            12,
+            10,
+            `Level ${this.levelIndex + 1}/${LEVELS.length} — ${def.name}`,
+            { fontFamily: "Arial", fontSize: "18px", color: "#ffffff" },
+        );
+
+        this.centerText = this.add
+            .text(this.scale.width / 2, this.scale.height / 2, "", {
                 fontFamily: "Arial",
                 fontSize: "48px",
                 color: "#ffffff",
@@ -44,12 +65,30 @@ export class GameScene extends Phaser.Scene {
     override update(): void {
         if (this.levelCompleted) return;
         this.player.update();
+
+        if (this.player.y > this.scale.height + GameScene.FALL_LIMIT_PADDING) {
+            this.restartLevel();
+        }
     }
 
     private completeLevel(): void {
         if (this.levelCompleted) return;
         this.levelCompleted = true;
         this.player.freeze();
-        this.levelCompleteText.setVisible(true);
+
+        const isLast = this.levelIndex >= LEVELS.length - 1;
+        this.centerText
+            .setText(isLast ? "ALL LEVELS COMPLETED!" : "LEVEL COMPLETED!")
+            .setVisible(true);
+
+        if (isLast) return;
+
+        this.time.delayedCall(GameScene.TRANSITION_DELAY_MS, () => {
+            this.scene.restart({ levelIndex: this.levelIndex + 1 });
+        });
+    }
+
+    private restartLevel(): void {
+        this.scene.restart({ levelIndex: this.levelIndex });
     }
 }
