@@ -1,7 +1,7 @@
 import Phaser from "phaser";
+import { Platform } from "./Platform";
 
 export class ObstaclePlatformDisappearing extends Phaser.GameObjects.Rectangle {
-    static readonly COLOR = 0x9966cc;
     static readonly TRIGGER_DISTANCE = 110;
     static readonly FADE_MS = 200;
 
@@ -10,7 +10,7 @@ export class ObstaclePlatformDisappearing extends Phaser.GameObjects.Rectangle {
     private vanished = false;
 
     constructor(scene: Phaser.Scene, x: number, y: number, width: number, height: number) {
-        super(scene, x, y, width, height, ObstaclePlatformDisappearing.COLOR);
+        super(scene, x, y, width, height, Platform.COLOR);
         scene.add.existing(this);
         scene.physics.add.existing(this, true);
     }

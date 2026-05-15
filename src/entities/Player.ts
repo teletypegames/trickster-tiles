@@ -4,7 +4,7 @@ export class Player extends Phaser.GameObjects.Rectangle {
     static readonly SIZE = 32;
     static readonly COLOR = 0xff4444;
     static readonly MOVE_SPEED = 250;
-    static readonly JUMP_VELOCITY = 600;
+    static readonly JUMP_VELOCITY = 480;
 
     declare body: Phaser.Physics.Arcade.Body;
 

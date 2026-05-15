@@ -4,8 +4,8 @@ export class ObstacleSpikeTricky extends Phaser.GameObjects.Rectangle {
     static readonly WIDTH = 40;
     static readonly HEIGHT = 20;
     static readonly COLOR = 0xff8800;
-    static readonly TRIGGER_DISTANCE = 140;
-    static readonly DISPLACEMENT = 80;
+    static readonly TRIGGER_DISTANCE = 55;
+    static readonly DISPLACEMENT = 100;
 
     declare body: Phaser.Physics.Arcade.StaticBody;
 
