@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import { BootScene } from "./scenes/BootScene";
 import { GameScene } from "./scenes/GameScene";
 
 const GAME_WIDTH = 800;
@@ -18,5 +19,5 @@ new Phaser.Game({
             debug: false,
         },
     },
-    scene: [GameScene],
+    scene: [BootScene, GameScene],
 });

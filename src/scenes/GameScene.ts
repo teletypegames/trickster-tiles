@@ -34,20 +34,6 @@ export class GameScene extends Phaser.Scene {
         super({ key: "GameScene" });
     }
 
-    preload(): void {
-        this.load.svg(Player.TEXTURE_KEY, "/sprites/player.svg", { width: 32, height: 32 });
-        this.load.svg(Exit.TEXTURE_KEY, "/sprites/exit.svg", { width: Exit.WIDTH, height: Exit.HEIGHT });
-        this.load.svg(Platform.TEXTURE_KEY, "/sprites/platform.svg", { width: 40, height: 40 });
-        this.load.svg(ObstacleSpikeNormal.TEXTURE_KEY, "/sprites/spike-normal.svg", {
-            width: ObstacleSpikeNormal.WIDTH,
-            height: ObstacleSpikeNormal.HEIGHT,
-        });
-        this.load.svg(ObstacleSpikeTricky.TEXTURE_KEY, "/sprites/spike-tricky.svg", {
-            width: ObstacleSpikeTricky.WIDTH,
-            height: ObstacleSpikeTricky.HEIGHT,
-        });
-    }
-
     init(data: SceneData): void {
         this.levelIndex = data.levelIndex ?? 0;
         this.levelCompleted = false;
