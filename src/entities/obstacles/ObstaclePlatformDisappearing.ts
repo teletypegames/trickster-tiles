@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import { Platform } from "./Platform";
+import { Platform } from "../Platform";
 
 export class ObstaclePlatformDisappearing extends Phaser.GameObjects.TileSprite {
     static readonly TRIGGER_DISTANCE = 110;

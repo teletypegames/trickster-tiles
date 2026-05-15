@@ -2,11 +2,13 @@ import Phaser from "phaser";
 import { Player } from "../entities/Player";
 import { Exit } from "../entities/Exit";
 import { Platform } from "../entities/Platform";
-import { ObstaclePlatformDisappearing } from "../entities/ObstaclePlatformDisappearing";
-import { ObstacleSpikeNormal } from "../entities/ObstacleSpikeNormal";
-import { ObstacleSpikeTricky } from "../entities/ObstacleSpikeTricky";
-import { LEVELS } from "../levels/levels";
-import { LevelLoader } from "../levels/LevelLoader";
+import {
+    ObstaclePlatformDisappearing,
+    ObstacleSpikeNormal,
+    ObstacleSpikeTricky,
+} from "../entities/obstacles";
+import { LEVELS } from "../levels";
+import { LevelLoader } from "../lib/LevelLoader";
 
 interface SceneData {
     levelIndex?: number;
