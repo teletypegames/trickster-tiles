@@ -1,6 +1,6 @@
 import { defineLevel } from "../lib/levelTypes";
 
-export const level02 = defineLevel("Csapda híd", [
+export const level02 = defineLevel("Trap Bridge", [
     "....................",
     "....................",
     "....................",
