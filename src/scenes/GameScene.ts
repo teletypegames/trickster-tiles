@@ -41,7 +41,7 @@ export class GameScene extends Phaser.Scene {
         this.exit = loaded.exit;
         this.platforms = loaded.platforms;
 
-        this.physics.add.collider(this.player, this.platforms);
+        this.physics.add.collider(this.player, this.platforms, undefined, Platform.canLand);
         this.physics.add.overlap(this.player, this.exit, () => this.completeLevel());
 
         this.hudText = this.add.text(
