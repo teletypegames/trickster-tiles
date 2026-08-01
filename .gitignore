@@ -3,3 +3,6 @@ dist
 .DS_Store
 *.local
 .claude
+.version
+*.html.zip
+*.metadata.json
