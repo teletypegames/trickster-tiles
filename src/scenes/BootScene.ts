@@ -15,18 +15,18 @@ interface SpriteAsset {
 }
 
 const SPRITE_ASSETS: SpriteAsset[] = [
-    { key: Player.TEXTURE_KEY, path: "/sprites/player.svg", width: Player.SIZE, height: Player.SIZE },
-    { key: Exit.TEXTURE_KEY, path: "/sprites/exit.svg", width: Exit.WIDTH, height: Exit.HEIGHT },
-    { key: Platform.TEXTURE_KEY, path: "/sprites/platform.svg", width: 40, height: 40 },
+    { key: Player.TEXTURE_KEY, path: "sprites/player.svg", width: Player.SIZE, height: Player.SIZE },
+    { key: Exit.TEXTURE_KEY, path: "sprites/exit.svg", width: Exit.WIDTH, height: Exit.HEIGHT },
+    { key: Platform.TEXTURE_KEY, path: "sprites/platform.svg", width: 40, height: 40 },
     {
         key: ObstacleSpikeNormal.TEXTURE_KEY,
-        path: "/sprites/spike-normal.svg",
+        path: "sprites/spike-normal.svg",
         width: ObstacleSpikeNormal.WIDTH,
         height: ObstacleSpikeNormal.HEIGHT,
     },
     {
         key: ObstacleSpikeTricky.TEXTURE_KEY,
-        path: "/sprites/spike-tricky.svg",
+        path: "sprites/spike-tricky.svg",
         width: ObstacleSpikeTricky.WIDTH,
         height: ObstacleSpikeTricky.HEIGHT,
     },
