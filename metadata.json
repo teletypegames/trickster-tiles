@@ -4,6 +4,7 @@
   "author": "Teletype Games",
   "desc": "A small pixel-art platformer: hop, jump, and outwit moving spikes and disappearing tiles across 10 levels. Made with Phaser 3.",
   "site": "https://git.teletypegames.org/games/trickster-tiles",
+  "repo": "https://git.teletypegames.org/games/trickster-tiles",
   "license": "MIT License",
   "version": "0.1.1"
 }
